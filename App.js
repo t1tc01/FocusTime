@@ -1,11 +1,34 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+//import { StatusBar } from 'expo-status-bar';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, StatusBar } from 'react-native';
+import {colors} from './src/utils/colors';
+import {Focus} from './src/features/Focus';
+import {Timer} from './src//features/Timer';
+import {FocusHistory} from './src/features/FocusHistory';
 
 export default function App() {
+
+  const [currentSubject, setCurrentSubject] = useState(null);
+  const [history, setHistory] = useState([]);
+
+  console.log(currentSubject);
   return (
     <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
+      {!currentSubject ? (
+        <>
+          <Focus addSubject={setCurrentSubject}/>
+          <FocusHistory history={history} />
+        </>
+      ) : (
+        <Timer 
+          focusSubject={currentSubject}
+          onTimerEnd={(subject) => {
+            setHistory([...history, subject])
+          }}
+          clearSubject={() => {setCurrentSubject(null)}}
+        />
+        ) 
+      }
     </View>
   );
 }
@@ -13,8 +36,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingTop: StatusBar.currentHeight,
+    backgroundColor: colors.backgroundColor,
   },
 });
